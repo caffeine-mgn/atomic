@@ -24,7 +24,10 @@ kotlin {
         linuxX64()
         linuxArm64()
         mingwX64()
-        js()
+        js {
+            browser()
+            nodejs()
+        }
         wasmJs()
         wasmWasi()
         androidNativeArm32()
@@ -32,7 +35,7 @@ kotlin {
         androidNativeX64()
         androidNativeX86()
     }
-
+    applyDefaultHierarchyTemplate()
     sourceSets {
         val commonMain by getting {
             dependencies {
