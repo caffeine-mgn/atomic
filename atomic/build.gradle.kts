@@ -20,28 +20,28 @@ kotlin {
         watchosDeviceArm64()
         watchosSimulatorArm64()
         watchosX64()
-    } else {
-        jvm()
-        linuxX64()
-        linuxArm64()
-        mingwX64()
-        js {
-            browser()
-            nodejs()
-        }
-        wasmJs {
-            browser()
-            nodejs()
-            d8()
-        }
-        wasmWasi {
-            nodejs()
-        }
-        androidNativeArm32()
-        androidNativeArm64()
-        androidNativeX64()
-        androidNativeX86()
     }
+    jvm()
+    linuxX64()
+    linuxArm64()
+    mingwX64()
+    js {
+        browser()
+        nodejs()
+    }
+    wasmJs {
+        browser()
+        nodejs()
+        d8()
+    }
+    wasmWasi {
+        nodejs()
+    }
+    androidNativeArm32()
+    androidNativeArm64()
+    androidNativeX64()
+    androidNativeX86()
+
     applyDefaultHierarchyTemplate()
     sourceSets {
         val commonMain by getting {
@@ -57,25 +57,23 @@ kotlin {
                 api(kotlin("test-annotations-common"))
             }
         }
-        if (!HostManager.hostIsMac) {
-            val jvmTest by getting {
+        val jvmTest by getting {
 //                dependsOn(commonTest)
-                dependencies {
+            dependencies {
 //                    api(kotlin("test"))
-                    implementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
-                    implementation("org.junit.jupiter:junit-jupiter-engine:5.7.1")
-                }
+                implementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+                implementation("org.junit.jupiter:junit-jupiter-engine:5.7.1")
             }
-            val fakeImplMain by creating
-            val jsMain by getting {
-                dependsOn(fakeImplMain)
-            }
-            val wasmJsMain by getting {
-                dependsOn(fakeImplMain)
-            }
-            val wasmWasiMain by getting {
-                dependsOn(fakeImplMain)
-            }
+        }
+        val fakeImplMain by creating
+        val jsMain by getting {
+            dependsOn(fakeImplMain)
+        }
+        val wasmJsMain by getting {
+            dependsOn(fakeImplMain)
+        }
+        val wasmWasiMain by getting {
+            dependsOn(fakeImplMain)
         }
         applyDefaultHierarchyTemplate()
     }
