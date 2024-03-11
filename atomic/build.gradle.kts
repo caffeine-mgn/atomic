@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.konan.target.HostManager
+import pw.binom.publish.plugins.PublicationPomInfoExtension
 
 plugins {
     kotlin("multiplatform")
@@ -28,8 +29,14 @@ kotlin {
             browser()
             nodejs()
         }
-        wasmJs()
-        wasmWasi()
+        wasmJs {
+            browser()
+            nodejs()
+            d8()
+        }
+        wasmWasi {
+            nodejs()
+        }
         androidNativeArm32()
         androidNativeArm64()
         androidNativeX64()
@@ -39,30 +46,47 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(kotlin("stdlib-common"))
+                api(kotlin("stdlib"))
             }
         }
 
         val commonTest by getting {
             dependencies {
+                api(kotlin("test"))
                 api(kotlin("test-common"))
                 api(kotlin("test-annotations-common"))
-//        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${pw.binom.Versions.KOTLINX_COROUTINES_VERSION}")
             }
         }
-        val fakeImplMain by creating
-        val jsMain by getting {
-            dependsOn(fakeImplMain)
+        if (!HostManager.hostIsMac) {
+            val jvmTest by getting {
+//                dependsOn(commonTest)
+                dependencies {
+//                    api(kotlin("test"))
+                    implementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+                    implementation("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+                }
+            }
+            val fakeImplMain by creating
+            val jsMain by getting {
+                dependsOn(fakeImplMain)
+            }
+            val wasmJsMain by getting {
+                dependsOn(fakeImplMain)
+            }
+            val wasmWasiMain by getting {
+                dependsOn(fakeImplMain)
+            }
         }
-        val wasmJsMain by getting {
-            dependsOn(fakeImplMain)
-        }
-        val wasmWasiMain by getting {
-            dependsOn(fakeImplMain)
-        }
+        applyDefaultHierarchyTemplate()
     }
 }
-// if (pw.binom.Target.ANDROID_JVM_SUPPORT) {
-//  apply<pw.binom.plugins.AndroidSupportPlugin>()
-// }
-// apply<pw.binom.plugins.ConfigPublishPlugin>()
+val publicationPomInfoExtension =
+    extensions.getByType(PublicationPomInfoExtension::class.java).apply {
+        useApache2License()
+        gitScm("https://github.com/caffeine-mgn/atomic")
+        author(
+            id = "subochev",
+            name = "Anton Subochev",
+            email = "caffeine.mgn@gmail.com",
+        )
+    }
