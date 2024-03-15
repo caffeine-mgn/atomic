@@ -1,23 +1,8 @@
 import pw.binom.publish.getExternalVersion
 
-buildscript {
-
-    repositories {
-        mavenLocal()
-        maven(url = "https://repo.binom.pw")
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-//    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${pw.binom.Versions.KOTLIN_VERSION}")
-//    classpath("org.jetbrains.kotlin:kotlin-serialization:${pw.binom.Versions.KOTLIN_VERSION}")
-//    classpath("com.bmuschko:gradle-docker-plugin:6.6.1")
-    }
-}
-
 plugins {
     id("com.github.gmazzo.buildconfig") version "3.0.3" apply false
-    id("pw.binom.publish") version "0.1.15" apply false
+    id("pw.binom.publish") version "0.1.18" apply false
     kotlin("multiplatform") version "1.9.23" apply false
 }
 
