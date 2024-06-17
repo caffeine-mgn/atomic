@@ -1,50 +1,45 @@
 package pw.binom.atomic
 
+import kotlin.reflect.KProperty
+
+@Suppress("NOTHING_TO_INLINE")
 @JvmInline
 actual value class AtomicInt(@PublishedApi internal val native: InternalAtomicInt) {
-  actual constructor(value: Int) : this(InternalAtomicInt(value))
+    actual constructor(value: Int) : this(InternalAtomicInt(value))
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun compareAndSet(expected: Int, new: Int): Boolean =
-    native.compareAndSet(expected, new)
+    actual inline fun compareAndSet(expected: Int, new: Int): Boolean =
+        native.compareAndSet(expected, new)
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun compareAndSwap(expected: Int, new: Int): Int =
-    native.compareAndExchange(expected, new)
+    actual inline fun compareAndSwap(expected: Int, new: Int): Int =
+        native.compareAndExchange(expected, new)
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun addAndGet(delta: Int): Int =
-    native.addAndGet(delta)
+    actual inline fun addAndGet(delta: Int): Int =
+        native.addAndGet(delta)
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun increment() {
-    native.incrementAndGet()
-  }
+    actual inline fun increment(): Int = native.incrementAndGet()
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun decrement() {
-    native.decrementAndGet()
-  }
+    actual inline fun decrement(): Int = native.decrementAndGet()
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline operator fun inc(): AtomicInt {
-    native.incrementAndGet()
-    return this
-  }
+    actual inline operator fun inc(): AtomicInt {
+        native.incrementAndGet()
+        return this
+    }
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline operator fun dec(): AtomicInt {
-    native.decrementAndGet()
-    return this
-  }
+    actual inline operator fun dec(): AtomicInt {
+        native.decrementAndGet()
+        return this
+    }
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun getValue(): Int = native.get()
+    actual inline fun getValue(): Int = native.get()
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun setValue(value: Int) {
-    native.set(value)
-  }
+    actual inline fun setValue(value: Int) {
+        native.set(value)
+    }
 
-  override fun toString(): String = "AtomicInt(value=${getValue()})"
+    override fun toString(): String = "AtomicInt(${getValue()})"
+
+    actual operator fun getValue(thisRef: Any?, property: KProperty<*>): Int = getValue()
+    actual operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
+        setValue(value)
+    }
 }

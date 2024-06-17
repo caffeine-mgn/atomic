@@ -1,23 +1,25 @@
 package pw.binom.atomic
 
+import kotlin.reflect.KProperty
+
+@Suppress("NOTHING_TO_INLINE")
 @JvmInline
 actual value class AtomicDouble(val native: InternalAtomicLong) {
-  actual constructor(value: Double) : this(InternalAtomicLong(value.toBits()))
+    actual constructor(value: Double) : this(InternalAtomicLong(value.toBits()))
 
-  actual fun compareAndSet(expected: Double, new: Double): Boolean {
-    if (native.get() != expected.toBits()) {
-      return false
+    actual inline fun compareAndSet(expected: Double, new: Double): Boolean =
+        native.compareAndSet(expected.toBits(), new.toBits())
+
+    actual inline fun getValue(): Double = Double.fromBits(native.get())
+
+    actual inline fun setValue(value: Double) {
+        native.set(value.toBits())
     }
-    native.set(new.toBits())
-    return true
-  }
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun getValue(): Double = Double.fromBits(native.get())
+    override fun toString(): String = "AtomicDouble(${getValue()})"
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun setValue(value: Double) {
-    native.set(value.toBits())
-  }
-  override fun toString(): String = "AtomicDouble(value=${getValue()})"
+    actual operator fun getValue(thisRef: Any?, property: KProperty<*>): Double = getValue()
+    actual operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Double) {
+        setValue(value)
+    }
 }

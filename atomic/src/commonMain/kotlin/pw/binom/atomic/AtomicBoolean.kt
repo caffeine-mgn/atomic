@@ -1,9 +1,10 @@
 package pw.binom.atomic
 
+import kotlin.reflect.KProperty
+
 /**
  * dsdf
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 expect value class AtomicBoolean(val native: InternalAtomicBoolean) {
     constructor(value: Boolean)
 
@@ -20,4 +21,7 @@ expect value class AtomicBoolean(val native: InternalAtomicBoolean) {
     inline fun getValue(): Boolean
 
     inline fun setValue(value: Boolean)
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): Boolean
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean)
 }

@@ -1,24 +1,28 @@
 package pw.binom.atomic
 
+import kotlin.reflect.KProperty
+
+@Suppress("NOTHING_TO_INLINE")
 @JvmInline
 actual value class AtomicBoolean actual constructor(val native: InternalAtomicBoolean) {
-  actual constructor(value: Boolean) : this(InternalAtomicBoolean(value))
+    actual constructor(value: Boolean) : this(InternalAtomicBoolean(value))
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun compareAndSet(expected: Boolean, new: Boolean): Boolean =
-    native.compareAndSet(expected, new)
+    actual inline fun compareAndSet(expected: Boolean, new: Boolean): Boolean =
+        native.compareAndSet(expected, new)
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun compareAndSwap(expected: Boolean, new: Boolean): Boolean =
-    native.compareAndSet(expected, new)
+    actual inline fun compareAndSwap(expected: Boolean, new: Boolean): Boolean =
+        native.compareAndSet(expected, new)
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun getValue(): Boolean = native.get()
+    actual inline fun getValue(): Boolean = native.get()
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun setValue(value: Boolean) {
-    native.set(value)
-  }
+    actual inline fun setValue(value: Boolean) {
+        native.set(value)
+    }
 
-  override fun toString(): String = "AtomicBoolean(value=${getValue()})"
+    override fun toString(): String = "AtomicBoolean(${getValue()})"
+
+    actual operator fun getValue(thisRef: Any?, property: KProperty<*>): Boolean = getValue()
+    actual operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
+        setValue(value)
+    }
 }

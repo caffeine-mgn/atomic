@@ -1,62 +1,57 @@
 package pw.binom.atomic
 
+import kotlin.reflect.KProperty
+
+@Suppress("NOTHING_TO_INLINE")
 actual value class AtomicInt(@PublishedApi internal val native: InternalAtomicInt) {
-  actual constructor(value: Int) : this(InternalAtomicInt(value))
+    actual constructor(value: Int) : this(InternalAtomicInt(value))
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun compareAndSet(expected: Int, new: Int): Boolean {
-    if (native.value != expected) {
-      return false
+    actual inline fun compareAndSet(expected: Int, new: Int): Boolean {
+        if (native.value != expected) {
+            return false
+        }
+        native.value = new
+        return true
     }
-    native.value = new
-    return true
-  }
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun compareAndSwap(expected: Int, new: Int): Int {
-    val oldValue = native.value
-    if (oldValue != expected) {
-      return native.value
+    actual inline fun compareAndSwap(expected: Int, new: Int): Int {
+        val oldValue = native.value
+        if (oldValue != expected) {
+            return native.value
+        }
+        native.value = new
+        return oldValue
     }
-    native.value = new
-    return oldValue
-  }
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun addAndGet(delta: Int): Int {
-    native.value += delta
-    return native.value
-  }
+    actual inline fun addAndGet(delta: Int): Int {
+        native.value += delta
+        return native.value
+    }
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun increment() {
-    addAndGet(1)
-  }
+    actual inline fun increment() = addAndGet(1)
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun decrement() {
-    addAndGet(-1)
-  }
+    actual inline fun decrement() = addAndGet(-1)
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline operator fun inc(): AtomicInt {
-    increment()
-    return this
-  }
+    actual inline operator fun inc(): AtomicInt {
+        increment()
+        return this
+    }
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline operator fun dec(): AtomicInt {
-    decrement()
-    return this
-  }
+    actual inline operator fun dec(): AtomicInt {
+        decrement()
+        return this
+    }
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun getValue(): Int = native.value
+    actual inline fun getValue(): Int = native.value
 
-  @Suppress("NOTHING_TO_INLINE")
-  actual inline fun setValue(value: Int) {
-    native.value = value
-  }
+    actual inline fun setValue(value: Int) {
+        native.value = value
+    }
 
-  override fun toString(): String = "AtomicInt(value=${getValue()})"
+    override fun toString(): String = "AtomicInt(${getValue()})"
+
+    actual operator fun getValue(thisRef: Any?, property: KProperty<*>): Int = getValue()
+    actual operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
+        setValue(value)
+    }
 }
