@@ -9,6 +9,12 @@ plugins {
 }
 kotlin {
     allTargets()
+    wasmJs {
+        binaries.library()
+    }
+    wasmWasi{
+        binaries.library()
+    }
     applyDefaultHierarchyBinomTemplate()
 
     targets.all {
