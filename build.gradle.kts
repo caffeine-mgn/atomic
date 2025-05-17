@@ -2,8 +2,9 @@ import pw.binom.publish.getExternalVersion
 
 plugins {
     id("com.github.gmazzo.buildconfig") version "3.0.3" apply false
-    id("pw.binom.publish") version "0.1.18" apply false
-    kotlin("multiplatform") version "2.0.20" apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+//    kotlin("multiplatform") version "2.0.20" apply false
+    alias(libs.plugins.binom.publish) apply false
 }
 
 allprojects {

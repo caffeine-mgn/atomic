@@ -1,19 +1,31 @@
+import org.gradle.kotlin.dsl.internal.sharedruntime.codegen.generateKotlinDslApiExtensionsSourceTo
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import pw.binom.publish.allTargets
 import pw.binom.publish.applyDefaultHierarchyBinomTemplate
 import pw.binom.publish.plugins.PublicationPomInfoExtension
 
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
     id("maven-publish")
-    id("pw.binom.publish")
+    alias(libs.plugins.binom.publish)
 }
 kotlin {
-    allTargets()
-    wasmJs {
-        binaries.library()
+    allTargets {
+//        -"js"
+        -"wasmJs"
     }
-    wasmWasi{
-        binaries.library()
+    jvm {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
+        }
+    }
+    wasmJs {
+//        binaries.library()
+        generateTypeScriptDefinitions()
+    }
+
+    wasmWasi {
+//        binaries.library()
     }
     applyDefaultHierarchyBinomTemplate()
 
